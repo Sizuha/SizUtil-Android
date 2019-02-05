@@ -252,7 +252,7 @@ fun httpGet(url: String, params: Map<String,String>): SizHttp.Response {
     return SizHttp().request(url, params, SizHttp.RequestMethod.GET)
 }
 
-fun httpPost(url: String, params: ContentValues? = null): SizHttp.Response {
+fun httpPost(url: String, params: ContentValues): SizHttp.Response {
     return SizHttp().request(url, params, SizHttp.RequestMethod.POST)
 }
 fun httpPost(url: String, params: Map<String,String>): SizHttp.Response {
@@ -266,7 +266,7 @@ fun httpGetAsync(url: String, params: Map<String,String>, onResponse: ((SizHttp.
     httpRequestAsync(SizHttp.RequestMethod.GET, url, params, onResponse)
 }
 
-fun httpPostAsync(url: String, params: ContentValues? = null, onResponse: ((SizHttp.Response)->Void)? = null) {
+fun httpPostAsync(url: String, params: ContentValues, onResponse: ((SizHttp.Response)->Void)? = null) {
     httpRequestAsync(SizHttp.RequestMethod.POST, url, params, onResponse)
 }
 fun httpPostAsync(url: String, params: Map<String,String>, onResponse: ((SizHttp.Response)->Void)? = null) {
