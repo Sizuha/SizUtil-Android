@@ -19,6 +19,22 @@ dependencies {
 
 val params = ContentValues().apply { ... }
 httpRequestAsync(SizHttp.RequestMethod.POST, "http://...", params) { response: SizHttp.Response ->
-  // ...
+  // Arrayの場合
+  val arr = response.asJsonArray
+  if (arr != null) {
+    for (i in 0 until arr.length()) {
+      val intVal = arr.getInt(i)
+      val dic = arr.getJSONObject(i)
+      val subArr = arr.getJSONArray(i)
+    }
+  }
+
+  // Dictionaryの場合
+  val dic = response.asJsonDictionary
+  if (dic != null) {
+    val json = SizJson(dic)
+    val strVal: String? = json.getString("key1")
+    val intVal: Int? = json.getInt("key2")
+  }
 }
 ```
