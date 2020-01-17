@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jetbrains.dokka'
 
 android {
     compileSdkVersion 28
@@ -10,6 +11,9 @@ android {
         versionCode 1
         versionName "0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        project.archivesBaseName = "sizutil"
+        project.version = android.defaultConfig.versionName + "." + android.defaultConfig.versionCode
     }
     buildTypes {
         release {
@@ -20,11 +24,19 @@ android {
 
     libraryVariants.all { variant ->
         variant.outputs.all { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.aar')) {
+            if (output.outputFileName != null && output.outputFileName.endsWith('.aar')) {
                 outputFileName = "${archivesBaseName}-${version}.aar"
             }
         }
+    }
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+    configuration {
+        sourceRoots = [files('src/main/java')]
     }
 }
 
