@@ -107,7 +107,7 @@ open class SizHttp(var baseUrl: String = "") {
         val JSON_ERROR = 1400
         val CONNECT_ERROR = 444
 
-        fun isSuccess(code: Int) = code in StatusCodes.OK..StatusCodes.NO_CONTENT
+        fun isSuccess(code: Int) = code in OK..NO_CONTENT
     }
 
     open class Response(val status: Int, val content: String? = null) {
