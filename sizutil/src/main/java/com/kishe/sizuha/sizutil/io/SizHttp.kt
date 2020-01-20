@@ -234,7 +234,7 @@ open class SizHttpAsync: AsyncTask<String, Void, SizHttp.Response>() {
         if (url.isNotEmpty()) this.url = url
         if (onResponse != null) this.onResponse = onResponse
 
-        super.execute()
+        this.execute()
     }
 
     override fun doInBackground(vararg params: String?): SizHttp.Response {
@@ -286,7 +286,7 @@ fun httpRequestAsync(
         this.method = method
         if (params != null) setParams(params)
         request(url, onResponse)
-    }.execute()
+    }
 }
 
 private fun httpRequestAsync(
@@ -299,5 +299,5 @@ private fun httpRequestAsync(
         this.method = method
         setParams(params)
         request(url, onResponse)
-    }.execute()
+    }
 }
