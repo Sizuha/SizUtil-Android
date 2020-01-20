@@ -204,6 +204,8 @@ open class SizHttp(var baseUrl: String = "") {
 
 }
 
+typealias SizHttpResProc = (SizHttp.Response)->Unit
+
 open class SizHttpAsync: AsyncTask<String, Void, SizHttp.Response>() {
     private val http = SizHttp()
     var baseUrl: String
@@ -226,9 +228,9 @@ open class SizHttpAsync: AsyncTask<String, Void, SizHttp.Response>() {
         paramStr = makeHttpQueryString(params)
     }
 
-    var onResponse: ((SizHttp.Response)->Void)? = null
+    var onResponse: ((SizHttp.Response)->Unit)? = null
 
-    fun request(url: String = "", onResponse: ((SizHttp.Response)->Void)? = null) {
+    fun request(url: String = "", onResponse: SizHttpResProc? = null) {
         if (url.isNotEmpty()) this.url = url
         if (onResponse != null) this.onResponse = onResponse
 
@@ -259,17 +261,17 @@ fun httpPost(url: String, params: Map<String,String>): SizHttp.Response {
     return SizHttp().request(url, params, SizHttp.RequestMethod.POST)
 }
 
-fun httpGetAsync(url: String, params: ContentValues? = null, onResponse: ((SizHttp.Response)->Void)? = null) {
+fun httpGetAsync(url: String, params: ContentValues? = null, onResponse: SizHttpResProc? = null) {
     httpRequestAsync(SizHttp.RequestMethod.GET, url, params, onResponse)
 }
-fun httpGetAsync(url: String, params: Map<String,String>, onResponse: ((SizHttp.Response)->Void)? = null) {
+fun httpGetAsync(url: String, params: Map<String,String>, onResponse: SizHttpResProc? = null) {
     httpRequestAsync(SizHttp.RequestMethod.GET, url, params, onResponse)
 }
 
-fun httpPostAsync(url: String, params: ContentValues, onResponse: ((SizHttp.Response)->Void)? = null) {
+fun httpPostAsync(url: String, params: ContentValues, onResponse: SizHttpResProc? = null) {
     httpRequestAsync(SizHttp.RequestMethod.POST, url, params, onResponse)
 }
-fun httpPostAsync(url: String, params: Map<String,String>, onResponse: ((SizHttp.Response)->Void)? = null) {
+fun httpPostAsync(url: String, params: Map<String,String>, onResponse: SizHttpResProc? = null) {
     httpRequestAsync(SizHttp.RequestMethod.POST, url, params, onResponse)
 }
 
@@ -278,7 +280,7 @@ fun httpRequestAsync(
     method: SizHttp.RequestMethod,
     url: String,
     params: ContentValues?,
-    onResponse: ((SizHttp.Response)->Void)?
+    onResponse: SizHttpResProc?
 ) {
     SizHttpAsync().apply {
         this.method = method
@@ -291,7 +293,7 @@ private fun httpRequestAsync(
     method: SizHttp.RequestMethod,
     url: String,
     params: Map<String,String>,
-    onResponse: ((SizHttp.Response)->Void)?
+    onResponse: SizHttpResProc?
 ) {
     SizHttpAsync().apply {
         this.method = method

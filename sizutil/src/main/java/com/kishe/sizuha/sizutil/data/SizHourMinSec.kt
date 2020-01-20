@@ -1,4 +1,4 @@
-package sizuha.library.slib.kotlin.datetime
+package com.kishe.sizuha.sizutil.data
 
 import java.util.*
 
