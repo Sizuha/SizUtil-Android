@@ -10,10 +10,7 @@ import java.io.BufferedWriter
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.io.UnsupportedEncodingException
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
-import java.net.URLEncoder
+import java.net.*
 
 
 private const val DEFAULT_ENCODING = "UTF-8"
@@ -146,34 +143,40 @@ open class SizHttp(var baseUrl: String = "") {
         return request(url, makeHttpQueryString(params), method)
     }
 
-    fun request(url: String = "", paramStr: String?, method: RequestMethod = RequestMethod.GET): Response {
+    fun createRequest(url: String = "", paramStr: String?, method: RequestMethod = RequestMethod.GET): HttpURLConnection {
         val notEmptyParam = paramStr != null && paramStr.isNotEmpty()
         var urlConn: HttpURLConnection? = null
 
+        val urlObj = if (!method.isNeedOutputParamMethod && notEmptyParam) {
+            URL("$baseUrl$url?$paramStr")
+        }
+        else {
+            URL("$baseUrl$url")
+        }
+
+        urlConn = urlObj.openConnection() as HttpURLConnection
+        urlConn.readTimeout = timeoutMs
+        urlConn.connectTimeout = timeoutMs
+        urlConn.doInput = true
+        urlConn.doOutput = method.isNeedOutputParamMethod
+        urlConn.requestMethod = method.toString()
+
+        if (notEmptyParam && method.isNeedOutputParamMethod) {
+            val os = urlConn.outputStream
+            val writer = BufferedWriter(OutputStreamWriter(os, DEFAULT_ENCODING))
+            writer.write(paramStr)
+            writer.flush()
+            writer.close()
+            os.close()
+        }
+
+        return urlConn
+    }
+
+    fun request(url: String = "", paramStr: String?, method: RequestMethod = RequestMethod.GET): Response {
+        var urlConn: HttpURLConnection? = null
         return try {
-            val urlObj = if (!method.isNeedOutputParamMethod && notEmptyParam) {
-                URL("$baseUrl$url?$paramStr")
-            }
-            else {
-                URL("$baseUrl$url")
-            }
-
-            urlConn = urlObj.openConnection() as HttpURLConnection
-            urlConn.readTimeout = timeoutMs
-            urlConn.connectTimeout = timeoutMs
-            urlConn.doInput = true
-            urlConn.doOutput = method.isNeedOutputParamMethod
-            urlConn.requestMethod = method.toString()
-
-            if (notEmptyParam && method.isNeedOutputParamMethod) {
-                val os = urlConn.outputStream
-                val writer = BufferedWriter(OutputStreamWriter(os, DEFAULT_ENCODING))
-                writer.write(paramStr)
-                writer.flush()
-                writer.close()
-                os.close()
-            }
-
+            urlConn = createRequest(url, paramStr, method)
             urlConn.connect()
 
             // HTTPレスポンスコード
