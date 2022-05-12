@@ -61,6 +61,10 @@ fun makeHttpQueryString(params: ContentValues): String {
 
 open class SizHttp(var baseUrl: String = "") {
 
+    companion object {
+        var userAgent: String? = null
+    }
+
     enum class RequestMethod constructor(private var method: Int) {
         GET(0),
         POST(1),
@@ -161,6 +165,10 @@ open class SizHttp(var baseUrl: String = "") {
             urlConn.doInput = true
             urlConn.doOutput = method.isNeedOutputParamMethod
             urlConn.requestMethod = method.toString()
+
+            if (userAgent != null) {
+                urlConn.addRequestProperty("User-Agent", userAgent)
+            }
 
             if (notEmptyParam && method.isNeedOutputParamMethod) {
                 val os = urlConn.outputStream
