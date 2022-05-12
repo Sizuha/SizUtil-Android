@@ -167,7 +167,7 @@ open class SizHttp(var baseUrl: String = "") {
             urlConn.requestMethod = method.toString()
 
             if (userAgent != null) {
-                urlConn.addRequestProperty("User-Agent", userAgent)
+                urlConn.setRequestProperty("User-Agent", userAgent)
             }
 
             if (notEmptyParam && method.isNeedOutputParamMethod) {
